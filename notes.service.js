@@ -1,4 +1,4 @@
-const url = 'http://localhost:4200/api/notes'
+const url = 'https://notilda.herokuapp.com/api/notes'
 
 function getNotes() {
   return fetch(url)
