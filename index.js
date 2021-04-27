@@ -1,6 +1,6 @@
 import styles from './main.css';
 
-// import notesService from 'notes.service.js'
+import notesService from './notes.service'
 
 if (module.hot) {
   module.hot.accept();
@@ -8,38 +8,37 @@ if (module.hot) {
 
 window.state = {};
 
-const createID = () => {
-  // ID creation will be handled by API in future
-  return Math.floor(Math.random() * 100000);
-};
-
 const startApp = () => {
   const root = document.getElementById('app-root');
 
   window.state = {
-    notes: getNotes(),
     editingNoteID: null,
   };
 
   window.newNote = content => {
-    const newNote = {
-      id: createID(),
-      content: content,
-    };
-
-    window.state.notes = [...window.state.notes, newNote];
+    notesService.createNote().then(note => {
+      window.state.notes = [...window.state.notes, note]
+      window.renderApp();
+    })
   };
 
   window.updateNote = (id, content) => {
-    window.state.notes = window.state.notes.map(note =>
-      note.id === id ? { ...note, content: content } : note,
-    );
-    window.state.editingNoteID = null;
+    const targetNote = window.state.notes.find(note => note.id === id)
+    targetNote.content = content;
+    notesService.updateNote(targetNote).then(note => {
+      window.state.notes = window.state.notes.map(note => note.id === id ? { ...note, content: content } : note)
+      window.state.editingNoteID = null;
+      window.renderApp();
+    })
   };
 
   window.deleteNote = id => {
-    if (confirm('Are you sure you want to delete this note?'))
-      window.state.notes = window.state.notes.filter(note => note.id !== id);
+    if (confirm('Are you sure you want to delete this note?')) {
+      notesService.deleteNote(id).then(() => {
+        window.state.notes = window.state.notes.filter(note => note.id !== id);
+        window.renderApp()
+      })
+    }
   };
 
   window.editNote = id => {
@@ -53,13 +52,17 @@ const startApp = () => {
       }
     }
     window.state.editingNoteID = id;
+    window.renderApp();
   };
 
   window.renderApp = () => {
+    console.log(window.editingNoteID)
     root.innerHTML = App(window.state);
   };
-
-  window.renderApp();
+  notesService.getNotes().then(notes => {
+    window.state.notes = notes;
+    window.renderApp();
+  })
 };
 
 const Header = () => `<header class="${styles.mainHeader}">
@@ -89,20 +92,19 @@ const Note = note => `<li
         ? `<button 
           class="${styles.noteControlsButton}" 
           onclick="
-            window.updateNote(${note.id}, document.querySelector('#note${note.id}').innerText); 
-            window.renderApp()
+            window.updateNote('${note.id}', document.querySelector('#note${note.id}').innerText);
           ">
             <i class="far fa-save"></i>
           </button>`
         : `<button 
           class="${styles.noteControlsButton}" 
-          onclick="window.editNote(${note.id}); window.renderApp()">
+          onclick="window.editNote('${note.id}')">
             <i class="fas fa-pencil-alt"></i>
           </button>`
     }
     <button 
       class="${styles.noteControlsButton} ${styles.deleteButton}" 
-      onclick="window.deleteNote(${note.id}); window.renderApp();">
+      onclick="window.deleteNote('${note.id}');">
         <i class="far fa-trash-alt"></i>
       </button>
   </div>
@@ -117,8 +119,7 @@ const NoteList = () => `<ul class="${styles.noteList}">
 
 const NewNoteButton = () => `
   <button 
-    onClick="window.newNote('Empty note'); 
-    window.renderApp()"
+    onClick="window.newNote('Empty note')"
     class="${styles.newNoteButton}"
   >
   <i class="far fa-edit"></i> Add note
