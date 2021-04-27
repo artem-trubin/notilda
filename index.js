@@ -1,133 +1,138 @@
-import {currencyByDate} from './fixtures';
+import styles from './main.css';
 
-import {EUR, formatDateForRequest, PLN, USD,} from './utils';
+// import notesService from 'notes.service.js'
 
 if (module.hot) {
   module.hot.accept();
 }
 
-window.dataStore = {
-  currentCurrency: USD,
-  currentDate: new Date('April 21, 21'),
+window.state = {};
+
+const createID = () => {
+  // ID creation will be handled by API in future
+  return Math.floor(Math.random() * 100000);
 };
 
-window.renderApp = renderApp;
+const startApp = () => {
+  const root = document.getElementById('app-root');
 
-const setCurrency = function (value) {
-  window.dataStore.currentCurrency = value;
+  window.state = {
+    notes: getNotes(),
+    editingNoteID: null,
+  };
+
+  window.newNote = content => {
+    const newNote = {
+      id: createID(),
+      content: content,
+    };
+
+    window.state.notes = [...window.state.notes, newNote];
+  };
+
+  window.updateNote = (id, content) => {
+    window.state.notes = window.state.notes.map(note =>
+      note.id === id ? { ...note, content: content } : note,
+    );
+    window.state.editingNoteID = null;
+  };
+
+  window.deleteNote = id => {
+    if (confirm('Are you sure you want to delete this note?'))
+      window.state.notes = window.state.notes.filter(note => note.id !== id);
+  };
+
+  window.editNote = id => {
+    if (window.state.editingNoteID) {
+      const currentEditingNoteID = window.state.editingNoteID;
+      if (confirm('You have unsaved work on an editing note. Do you want to save it?')) {
+        window.updateNote(
+          currentEditingNoteID,
+          document.querySelector(`#note${currentEditingNoteID}`).innerText,
+        );
+      }
+    }
+    window.state.editingNoteID = id;
+  };
+
+  window.renderApp = () => {
+    root.innerHTML = App(window.state);
+  };
+
   window.renderApp();
 };
 
-renderApp();
+const Header = () => `<header class="${styles.mainHeader}">
+  <h1>Notilda</h1>
+  <p>Welcome home.</p>
+</header>`;
 
-function renderApp() {
-  document.getElementById('app-root').innerHTML = `
-        ${app()}
-    `;
-}
-
-
-function app() {
-  return `<div class="container py-5" class="p-5 mb-4 bg-light rounded-3">
-  ${exchangeRateToday()}
-  <div class="row align-items-start">
-      <div class="col-6">
-      ${chooseCurrency(window.dataStore.currentCurrency, setCurrency)}
-      ${chooseDate()}
- </div>
-</div>`;
-}
-
-
-function exchangeRateToday() {
-  const {currentCurrency, currentDate} = window.dataStore;
-
-  const ratesForToday = currencyByDate[formatDateForRequest(currentDate)];
-  const exchangeRateToday = (
-    ratesForToday ? ratesForToday[currentCurrency][0]["rate"] : null
-  );
-
-  const yesterday = new Date(currentDate);
-  yesterday.setDate(yesterday.getDate() - 1);
-
-  const ratesForYesterday = currencyByDate[formatDateForRequest(yesterday)];
-  const exchangeRateYesterday = (
-    ratesForYesterday ? ratesForYesterday[currentCurrency][0]["rate"] : null
-  );
-
-  const rateDifference = (
-    exchangeRateToday && exchangeRateYesterday
-      ? (exchangeRateToday - exchangeRateYesterday).toFixed(2) : null
-  );
-
-  return displayExchangeRateToday(
-    currentCurrency, exchangeRateToday, currentDate, rateDifference
-  );
-}
-
-
-function displayExchangeRateToday(currency, exchangeRate, date, rateDifference) {
-  exchangeRate = exchangeRate || 'Not Available';
-
-  const dateString = date.toLocaleDateString();
-
-  let rateDifferenceStr = '';
-  if (rateDifference) {
-    const differenceStyle = rateDifference > 0 ? 'success' : 'danger';
-    const sign = rateDifference > 0 ? '+' : '';
-    rateDifferenceStr = (
-      `<span class="text-${differenceStyle} fs-3">${sign}${rateDifference}</span>`
-    );
+const Note = note => `<li
+    class="${styles.noteItem} 
+    ${note.id === window.state.editingNoteID ? `${styles.editing}` : ''}"
+  >
+  ${
+    note.id === window.state.editingNoteID
+      ? `<span 
+        role="textbox" 
+        contenteditable 
+        placeholder="Type something..." 
+        class="${styles.noteContent} ${styles.editing}" 
+        id="note${note.id}">
+        ${note.content}
+      </span>`
+      : `<div class="${styles.noteContent}">${note.content}</div>`
   }
+  <div class="${styles.noteControls}">
+    ${
+      note.id === window.state.editingNoteID
+        ? `<button 
+          class="${styles.noteControlsButton}" 
+          onclick="
+            window.updateNote(${note.id}, document.querySelector('#note${note.id}').innerText); 
+            window.renderApp()
+          ">
+            <i class="far fa-save"></i>
+          </button>`
+        : `<button 
+          class="${styles.noteControlsButton}" 
+          onclick="window.editNote(${note.id}); window.renderApp()">
+            <i class="fas fa-pencil-alt"></i>
+          </button>`
+    }
+    <button 
+      class="${styles.noteControlsButton} ${styles.deleteButton}" 
+      onclick="window.deleteNote(${note.id}); window.renderApp();">
+        <i class="far fa-trash-alt"></i>
+      </button>
+  </div>
+</li>`;
 
-  return `
-  <h1 class="display-5 fw-bold">
-      <span class="text-secondary">${currency}:</span>
-      ${exchangeRate}
-      ${rateDifferenceStr}      
-  </h1>
-    <p class="text-secondary">
-      Rate for ${dateString}
-  </p> 
-  `
-}
+const NoteList = () => `<ul class="${styles.noteList}">
+  ${window.state.notes
+    .map(note => Note(note))
+    .reverse()
+    .join('')}
+</ul>`;
 
-
-function chooseCurrency(currentCurrency, setCurrencyCB) {
-  const currencies = [
-    {value: USD},
-    {value: EUR},
-    {value: PLN},
-  ];
-  let content = `
-    <label for="id_select">Choose currency:</label>
-    <select id="id_select" class="form-select" 
-    autofocus="true" onchange="(${setCurrencyCB})(this.value);">
-  `;
-
-  content += currencies.map(({value}) => {
-    const selected = currentCurrency === value ? 'selected' : '';
-    return `<option value="${value}" ${selected}>${value}</option>`;
-  }).join('');
-  content += `</select>`;
-  return content
-}
-
-
-function chooseDate() {
-  const currentDate = window.dataStore.currentDate;
-  // get date in `yyyy-mm-dd` format
-  const dateStr = currentDate.toISOString().split('T')[0];
-
-  return `
-    <div class="mt-3">
-        <label for="dateInput" class="form-label">Choose date:</label>
-        <input type="date"
-               value="${dateStr}"
-               onchange="window.dataStore.currentDate = new Date(this.value); 
-                window.renderApp();"
-               class="form-control"
-               id="dateInput">
-    </div>
+const NewNoteButton = () => `
+  <button 
+    onClick="window.newNote('Empty note'); 
+    window.renderApp()"
+    class="${styles.newNoteButton}"
+  >
+  <i class="far fa-edit"></i> Add note
+  </button>
 `;
-}
+
+const App = () => `<div class="${styles.container}">
+    <div class="${styles.sidebar}">
+      ${Header()}
+      ${NewNoteButton()}
+    </div>
+    <div class="${styles.mainContainer}">
+      ${NoteList()}
+    </div>
+  </div>
+  `;
+startApp();
