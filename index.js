@@ -18,7 +18,11 @@ const startApp = () => {
   window.newNote = content => {
     notesService.createNote().then(note => {
       window.state.notes = [...window.state.notes, note]
+      window.state.editingNoteID = note.id;
       window.renderApp();
+      
+      const editingElement = document.querySelector(`.${styles.editing} span`);
+      console.log("test", editingElement)
     })
   };
 
@@ -33,6 +37,9 @@ const startApp = () => {
   };
 
   window.deleteNote = id => {
+    if (window.state.editingNoteID && window.state.editingNoteID == id) {
+      window.state.editingNoteID = null;
+    }
     if (confirm('Are you sure you want to delete this note?')) {
       notesService.deleteNote(id).then(() => {
         window.state.notes = window.state.notes.filter(note => note.id !== id);
@@ -53,12 +60,16 @@ const startApp = () => {
     }
     window.state.editingNoteID = id;
     window.renderApp();
+    
+    const editingElement = document.querySelector(`.${styles.editing} span`);
+    console.log("test", editingElement)
+    editingElement.focus()
   };
 
   window.renderApp = () => {
-    console.log(window.editingNoteID)
     root.innerHTML = App(window.state);
   };
+
   notesService.getNotes().then(notes => {
     window.state.notes = notes;
     window.renderApp();
@@ -78,7 +89,8 @@ const Note = note => `<li
     note.id === window.state.editingNoteID
       ? `<span 
         role="textbox" 
-        contenteditable 
+        contenteditable
+        autofocus 
         placeholder="Type something..." 
         class="${styles.noteContent} ${styles.editing}" 
         id="note${note.id}">
@@ -89,7 +101,7 @@ const Note = note => `<li
   <div class="${styles.noteControls}">
     ${
       note.id === window.state.editingNoteID
-        ? `<button 
+        ? `<button
           class="${styles.noteControlsButton}" 
           onclick="
             window.updateNote('${note.id}', document.querySelector('#note${note.id}').innerText);
