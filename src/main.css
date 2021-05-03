@@ -1,8 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@200;400;500;600;900&display=swap');
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: sans-serif;
+  font-family: 'Raleway', sans-serif;
 }
 
 body {
@@ -94,7 +96,10 @@ body {
 
 .noteContent.editing:focus,
 .newNoteButton:focus,
-.noteControlsButton:focus {
+.noteControlsButton:focus,
+.formInput:focus,
+.formButton:focus,
+*:focus {
   outline: none;
   box-shadow: 0 0 0 3px #f8a488;
 }
@@ -148,11 +153,115 @@ body {
   position: sticky;
   top: 20px;
   margin-bottom: 10px;
-  height: 150px;
 }
 
 .deleteButton:hover {
   background: rgb(248, 110, 110);
+  color: white;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+
+  border: 2px solid #45526c;
+  border-radius: 10px;
+
+  background: #45526c;
+  color: white;
+}
+
+.pageTitle {
+  color: #45526c;
+  margin-bottom: 10px;
+}
+
+.formTip {
+  margin: 10px;
+  font-size: 15px;
+  font-weight: 100;
+}
+
+.formTip button {
+  color: white;
+  font-weight: 400;
+  text-decoration: underline;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+.formBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 10px;
+}
+
+.formLabel {
+  font-weight: 500;
+}
+
+.formInput {
+  padding: 10px;
+  border-radius: 5px;
+  margin: 5px;
+  border: none;
+  font-weight: 400;
+  background: rgb(218, 218, 218);
+}
+
+.formInput:focus {
+  background: white;
+}
+
+.formButton {
+  padding: 10px;
+  border-radius: 10px;
+  border: white solid 3px;
+  color: white;
+  margin: 10px;
+  background: #45526c;
+}
+
+.formButton:hover {
+  cursor: pointer;
+  background: white;
+  color: #45526c;
+}
+
+.userCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #45526c;
+  border: 2px solid #45526c;
+  border-radius: 10px;
+  padding: 10px;
+  color: white;
+  margin-bottom: 10px;
+}
+
+.userName {
+  font-weight: 400;
+  font-size: 25px;
+  margin: 10px;
+}
+
+.logoutButton {
+  border: 2px solid white;
+  padding: 5px;
+  background: none;
+  border-radius: 10px;
+  color: white;
+}
+
+.logoutButton:hover {
+  cursor: pointer;
+  border-color: rgb(255, 137, 137);
+  background: rgb(255, 137, 137);
   color: white;
 }
 

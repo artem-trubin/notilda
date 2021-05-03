@@ -1,21 +1,101 @@
-import styles from './main.css';
+import notesService from './src/services/notes.service'
+import VaultPage from './src/pages/VaultPage'
+import LoginPage from './src/pages/LoginPage'
+import RegisterPage from './src/pages/RegisterPage'
+import usersService from './src/services/users.service'
+import loginService from './src/services/login.service'
+import styles from './src/main.css'
 
-import notesService from './notes.service'
-
-if (module.hot) {
-  module.hot.accept();
-}
-
-window.state = {};
 
 const startApp = () => {
   const root = document.getElementById('app-root');
 
   window.state = {
     editingNoteID: null,
+    announcerText: "Test error",
+    currentPage: "login",
+    isDataLoading: false,
+    currentUser: null,
   };
 
-  window.newNote = content => {
+  window.announcer = document.createElement('dov')
+
+  window.announce = text => {
+    window.state.currentUser = JSON.parse(currentUser);
+    window.state.isDataLoading = true;
+    notesService.getNotes().then(notes => {
+      if (notes.error) {
+        console.log(notes.error)
+      } else {
+        window.state.notes = notes;
+        window.state.isDataLoading = false;
+        window.renderApp();
+      }
+    })
+  }
+
+  window.loginSubmit = ({ target }) => {
+    const username = target.username.value
+    const password = target.password.value
+
+    loginService.login({username, password})
+      .then(response => {
+        if (response.error) {
+          console.log(response.error)
+        } else {
+          window.state.currentPage = 'vault'
+          window.state.currentUser = response
+          window.localStorage.setItem('loggedNotildaUser', JSON.stringify(response))
+          window.loadNotes()
+          window.renderApp()
+        }
+      })
+  }
+
+  window.logout = () => {
+    window.localStorage.removeItem('loggedNotildaUser')
+    window.state.currentUser = null;
+    window.state.notes = null;
+    window.state.currentPage = 'login';
+    window.renderApp()
+  }
+
+  window.registerSubmit = ({ target }) => {
+    const username = target.username.value
+    const password = target.password.value
+    const password2 = target.password2.value
+
+    if (password !== password2) return console.log('Passwords need to match')
+    usersService.registerUser({ username, password })
+      .then(response => {
+        if (response.error) {
+          console.log(response.error)
+        } else {
+          window.state.currentPage = "login"
+          window.renderApp();
+        }
+      })
+  }
+
+  window.router = page => {
+    window.state.currentPage = page;
+    window.renderApp();
+  }
+  
+  window.loadNotes = () => {
+    window.state.isDataLoading = true;
+    notesService.getNotes().then(notes => {
+      if (notes.error) {
+        console.log(notes.error)
+      } else {
+        window.state.notes = notes;
+        window.state.isDataLoading = false;
+        window.renderApp();
+      }
+    })
+  }
+
+  window.newNote = () => {
     notesService.createNote().then(note => {
       window.state.notes = [...window.state.notes, note]
       window.state.editingNoteID = note.id;
@@ -66,86 +146,34 @@ const startApp = () => {
     editingElement.focus()
   };
 
+  const currentUser = window.localStorage.getItem('loggedNotildaUser')
+
+  if (currentUser) {
+    window.state.currentPage = "vault";
+    window.state.currentUser = JSON.parse(currentUser);
+    window.loadNotes();
+  } else {
+    window.state.currentPage = "login";
+  }
+
+
+
   window.renderApp = () => {
-    root.innerHTML = App(window.state);
+    switch(window.state.currentPage) {
+      case "vault":
+        
+        root.innerHTML = VaultPage();
+        break;
+      case "login":
+        root.innerHTML = LoginPage()
+        break;
+      case "register":
+        root.innerHTML = RegisterPage()
+        break;
+    }
   };
 
-  notesService.getNotes().then(notes => {
-    window.state.notes = notes;
-    window.renderApp();
-  })
+  window.renderApp();
 };
 
-const Header = () => `<header class="${styles.mainHeader}">
-  <h1>Notilda</h1>
-  <p>Welcome home.</p>
-</header>`;
-
-const Note = note => `<li
-    class="${styles.noteItem} 
-    ${note.id === window.state.editingNoteID ? `${styles.editing}` : ''}"
-  >
-  ${
-    note.id === window.state.editingNoteID
-      ? `<span 
-        role="textbox" 
-        contenteditable
-        autofocus 
-        placeholder="Type something..." 
-        class="${styles.noteContent} ${styles.editing}" 
-        id="note${note.id}">
-        ${note.content}
-      </span>`
-      : `<div class="${styles.noteContent}">${note.content}</div>`
-  }
-  <div class="${styles.noteControls}">
-    ${
-      note.id === window.state.editingNoteID
-        ? `<button
-          class="${styles.noteControlsButton}" 
-          onclick="
-            window.updateNote('${note.id}', document.querySelector('#note${note.id}').innerText);
-          ">
-            <i class="far fa-save"></i>
-          </button>`
-        : `<button 
-          class="${styles.noteControlsButton}" 
-          onclick="window.editNote('${note.id}')">
-            <i class="fas fa-pencil-alt"></i>
-          </button>`
-    }
-    <button 
-      class="${styles.noteControlsButton} ${styles.deleteButton}" 
-      onclick="window.deleteNote('${note.id}');">
-        <i class="far fa-trash-alt"></i>
-      </button>
-  </div>
-</li>`;
-
-const NoteList = () => `<ul class="${styles.noteList}">
-  ${window.state.notes
-    .map(note => Note(note))
-    .reverse()
-    .join('')}
-</ul>`;
-
-const NewNoteButton = () => `
-  <button 
-    onClick="window.newNote('Empty note')"
-    class="${styles.newNoteButton}"
-  >
-  <i class="far fa-edit"></i> Add note
-  </button>
-`;
-
-const App = () => `<div class="${styles.container}">
-    <div class="${styles.sidebar}">
-      ${Header()}
-      ${NewNoteButton()}
-    </div>
-    <div class="${styles.mainContainer}">
-      ${NoteList()}
-    </div>
-  </div>
-  `;
 startApp();
