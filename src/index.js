@@ -6,7 +6,6 @@
 // import loginService from './src/services/login.service'
 // import styles from './src/main.css'
 
-
 // const startApp = () => {
 //   const root = document.getElementById('app-root');
 
@@ -156,8 +155,6 @@
 //     window.state.currentPage = "login";
 //   }
 
-
-
 //   window.renderApp = () => {
 //     switch(window.state.currentPage) {
 //       case "vault":
@@ -181,6 +178,10 @@
 import React from 'react';
 import { render } from 'react-dom';
 
-import App from './components/App'
+import App from './components/App';
 
-render(<App />, document.getElementById("app-root"))
+if (module.hot) {
+  module.hot.accept();
+}
+
+render(<App />, document.getElementById('app-root'));

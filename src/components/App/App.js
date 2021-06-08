@@ -1,24 +1,16 @@
 import React, { useState } from 'react';
 
-import Checkbox from '../Checkbox'
+import Checkbox from '../Checkbox';
 
 const App = () => {
+  const [editingNote, setEditingNote] = useState(null);
+  const [currentPage, setCurrentPage] = useState('home');
+  const [isDataLoading, setIsDataLoading] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
 
-  const [test, setTest] = useState(false)
+  const loginSubmit = ({ username, password }) => {};
 
-  const handleChange = () => {
-    console.log('test')
-  }
-  return (
-    <div>
-      <Checkbox
-        id={1}
-        label={"test"}
-        condition={test}
-        onChange={event => onChange(event.target.value)}
-      />
-    </div>
-  )
-}
+  return <div></div>;
+};
 
-export default App
+export default App;
