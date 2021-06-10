@@ -4,7 +4,7 @@ import styles from './Header.css';
 
 import UserCard from '../UserCard';
 
-const Header = ({ currentUser }) => {
+const Header = ({ currentUser, logout }) => {
   return (
     <>
       <header className={styles.mainHeader}>
@@ -13,7 +13,7 @@ const Header = ({ currentUser }) => {
       </header>
       {currentUser && <UserCard />}
     </>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

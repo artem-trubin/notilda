@@ -2,6 +2,12 @@ import React, { useEffect, useState } from 'react';
 
 import loginService from '../../services/login.service';
 import notesService from '../../services/notes.service';
+import usersService from '../../services/users.service';
+
+import VaultPage from '../../pages/VaultPage';
+import LoginPage from '../../pages/LoginPage';
+import RegisterPage from '../../pages/RegisterPage';
+import HomePage from '../../pages/HomePage';
 
 const App = () => {
   const [editingNoteID, setEditingNoteID] = useState(null);
@@ -34,6 +40,13 @@ const App = () => {
     if (password !== password2) {
       // error handle
     } else {
+      usersService.registerUser({ username, password }).then(response => {
+        if (response.error) {
+          // handle error
+        } else {
+          setCurrentPage('login');
+        }
+      });
       setCurrentPage('login');
     }
   };
@@ -101,6 +114,45 @@ const App = () => {
       setCurrentPage('login');
     }
   }, []);
+
+  // return <div>Hello world</div>
+
+  switch (currentPage) {
+    case 'home':
+      return <HomePage />;
+    case 'vault':
+      return (
+        <VaultPage
+          currentUser={currentUser}
+          logout={logout}
+          newNote={newNote}
+          isDataLoading={isDataLoading}
+          notes={notes}
+          editingNoteID={editingNoteID}
+          updateNote={updateNote}
+          editNote={editNote}
+          deleteNote={deleteNote}
+        />
+      );
+    case 'login':
+      return (
+        <LoginPage
+          loginSubmit={loginSubmit}
+          currentUser={currentUser}
+          setCurrentPage={setCurrentPage}
+          logout={logout}
+        />
+      );
+    case 'register':
+      return (
+        <RegisterPage
+          setCurrentPage={setCurrentPage}
+          logout={logout}
+          currentUser={currentUser}
+          registerSubmit={registerSubmit}
+        />
+      );
+  }
 };
 
 export default App;
