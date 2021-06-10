@@ -14,7 +14,7 @@ const LoginForm = ({ loginSubmit, setCurrentPage }) => {
         className={styles.form}
         onSubmit={e => {
           e.preventDefault();
-          loginSubmit(username, password);
+          loginSubmit({ username, password });
         }}
       >
         <div className={styles.formBlock}>
