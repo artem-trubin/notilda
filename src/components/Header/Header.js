@@ -11,7 +11,7 @@ const Header = ({ currentUser, logout }) => {
         <h1>Notilda</h1>
         <p>Welcome home.</p>
       </header>
-      {currentUser && <UserCard />}
+      {currentUser && <UserCard currentUser={currentUser} logout={logout} />}
     </>
   );
 };

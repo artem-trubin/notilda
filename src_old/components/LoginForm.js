@@ -1,4 +1,4 @@
-import styles from '../main.css'
+import styles from '../main.css';
 
 const LoginForm = () => `
   <div>
@@ -13,11 +13,11 @@ const LoginForm = () => `
         <input type="password" class="${styles.formInput}" id="password">
       </div>
       <button class="${styles.formButton}">Log in</button>
-      <div class="${styles.formTip}">Don't have account yet? 
-        <button type="button" onclick="window.router('register')">Register here</button>
+      <div class="${styles.formTip}">Don't have account yet?
+        <button type="button" onClick="window.router('register')">Register here</button>
       .</div>
     </form>
   </div>
-`
+`;
 
-export default LoginForm
+export default LoginForm;
