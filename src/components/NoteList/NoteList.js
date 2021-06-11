@@ -12,6 +12,7 @@ const NoteList = ({ isDataLoading, notes, editingNoteID, updateNote, deleteNote,
         {notes
           .map(note => (
             <Note
+              key={note.id}
               note={note}
               isEditing={editingNoteID === note.id}
               updateNote={updateNote}

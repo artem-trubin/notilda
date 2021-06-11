@@ -34,7 +34,9 @@ const Note = ({ note, isEditing, updateNote, editNote, deleteNote }) => {
         <button
           className={styles.noteControlsButton + ' ' + styles.deleteButton}
           onClick={() => deleteNote(id)}
-        ></button>
+        >
+          <i className="far fa-trash-alt"></i>
+        </button>
       </div>
     </li>
   );
