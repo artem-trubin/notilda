@@ -53,7 +53,7 @@ const App = () => {
 
   const loadNotes = () => {
     setIsDataLoading(true);
-    notesServices.getNotes().then(notes => {
+    notesService.getNotes(currentUser).then(notes => {
       if (notes.error) {
         // handle error
       } else {
@@ -64,7 +64,7 @@ const App = () => {
   };
 
   const newNote = () => {
-    notesService.createNote().then(note => {
+    notesService.createNote(currentUser).then(note => {
       setNotes([...notes, note]);
       setEditingNoteID(note.id);
     });
@@ -73,7 +73,7 @@ const App = () => {
   const updateNote = (id, content) => {
     const targetNote = notes.find(note => note.id === id);
     targetNote.content = content;
-    notesService.updateNote(targetNote).then(note => {
+    notesService.updateNote(currentUser, targetNote).then(note => {
       notes = notes.map(note => (note.id === id ? { ...note, content: content } : note));
       setEditingNoteID(null);
     });
@@ -84,7 +84,7 @@ const App = () => {
       setEditingNoteID(null);
     }
     if (confirm('Are you sure you want to delete this note?')) {
-      notesService.deleteNote(id).then(() => {
+      notesService.deleteNote(currentUser, id).then(() => {
         setNotes(notes.filter(note => note.id !== id));
       });
     }
@@ -114,6 +114,13 @@ const App = () => {
       setCurrentPage('login');
     }
   }, []);
+
+  useEffect(() => {
+    if (currentUser) {
+      loadNotes();
+    }
+  }, [currentUser]);
+
   switch (currentPage) {
     case 'home':
       return <HomePage />;
