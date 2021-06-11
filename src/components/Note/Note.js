@@ -1,6 +1,6 @@
 import React from 'react';
 
-import styles from './Note.css';
+import styles from '../../main.css';
 
 const Note = ({ note, isEditing, updateNote, editNote, deleteNote }) => {
   return (
@@ -33,7 +33,7 @@ const Note = ({ note, isEditing, updateNote, editNote, deleteNote }) => {
         )}
         <button
           className={styles.noteControlsButton + ' ' + styles.deleteButton}
-          onClick={() => deleteNote(id)}
+          onClick={() => deleteNote(note.id)}
         >
           <i className="far fa-trash-alt"></i>
         </button>

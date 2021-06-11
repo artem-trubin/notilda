@@ -1,6 +1,6 @@
 import React from 'react';
 
-import styles from './NewNoteButton.css';
+import styles from '../../main.css';
 
 const NewNoteButton = ({ newNote }) => {
   return (

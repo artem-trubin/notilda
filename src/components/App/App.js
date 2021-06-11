@@ -74,7 +74,7 @@ const App = () => {
     const targetNote = notes.find(note => note.id === id);
     targetNote.content = content;
     notesService.updateNote(currentUser, targetNote).then(note => {
-      notes = notes.map(note => (note.id === id ? { ...note, content: content } : note));
+      setNotes(notes.map(note => (note.id === id ? { ...note, content: content } : note)));
       setEditingNoteID(null);
     });
   };

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import styles from './UserCard.css';
+import styles from '../../main.css';
 
 const UserCard = ({ currentUser, logout }) => {
   return (

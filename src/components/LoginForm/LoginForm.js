@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import styles from './LoginForm.css';
+import styles from '../../main.css';
 
 const LoginForm = ({ loginSubmit, setCurrentPage }) => {
   const [username, setUsername] = useState('');

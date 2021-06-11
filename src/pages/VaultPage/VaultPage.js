@@ -4,6 +4,8 @@ import Header from '../../components/Header';
 import NewNoteButton from '../../components/NewNoteButton';
 import NoteList from '../../components/NoteList';
 
+import styles from '../../main.css';
+
 const VaultPage = ({
   currentUser,
   logout,
@@ -16,12 +18,12 @@ const VaultPage = ({
   editNote,
 }) => {
   return (
-    <div>
-      <div>
+    <div className={styles.container}>
+      <div className={styles.sidebar}>
         <Header currentUser={currentUser} logout={logout} />
         <NewNoteButton newNote={newNote} />
       </div>
-      <div>
+      <div className={styles.mainContainer}>
         <NoteList
           isDataLoading={isDataLoading}
           notes={notes}
