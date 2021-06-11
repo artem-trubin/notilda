@@ -109,14 +109,11 @@ const App = () => {
 
     if (user) {
       setCurrentPage('vault');
-      setCurrentPage(JSON.parse(user));
+      setCurrentUser(JSON.parse(user));
     } else {
       setCurrentPage('login');
     }
   }, []);
-
-  // return <div>Hello world</div>
-
   switch (currentPage) {
     case 'home':
       return <HomePage />;
