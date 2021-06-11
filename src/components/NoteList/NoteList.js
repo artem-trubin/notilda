@@ -8,7 +8,7 @@ const NoteList = ({ isDataLoading, notes, editingNoteID, updateNote, deleteNote,
     return <div>Data is loading</div>;
   } else {
     return (
-      <ul class={StyleSheet.noteList}>
+      <ul className={StyleSheet.noteList}>
         {notes
           .map(note => (
             <Note

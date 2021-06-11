@@ -16,7 +16,7 @@ const Note = ({ note, isEditing, updateNote, editNote, deleteNote }) => {
           {note.content}
         </span>
       ) : (
-        <div class={styles.noteContent}>{note.content}</div>
+        <div className={styles.noteContent}>{note.content}</div>
       )}
       <div className={styles.noteControls}>
         {isEditing ? (
