@@ -105,8 +105,10 @@ body {
 }
 
 .noteContent {
+  word-wrap: break-word;
+  hyphens: auto;
   white-space: pre-wrap;
-  /* max-width: 360px; */
+  max-width: 360px;
   /* background-color: #45526c; */
   color: white;
   padding: 10px;
