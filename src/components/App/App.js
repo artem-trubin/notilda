@@ -18,16 +18,19 @@ const App = () => {
   const [announcerText, setAnnouncerText] = useState('');
 
   const loginSubmit = ({ username, password }) => {
-    loginService.login({ username, password }).then(response => {
-      if (response.error) {
-        setAnnouncerText(response.error);
-      } else {
-        setCurrentPage('vault');
-        setCurrentUser(response);
-        window.localStorage.setItem('loggedNotildaUser', JSON.stringify(response));
-        loadNotes();
-      }
-    });
+    loginService
+      .login({ username, password })
+      .then(response => {
+        if (response.error) {
+          setAnnouncerText(response.error);
+        } else {
+          setCurrentPage('vault');
+          setCurrentUser(response);
+          window.localStorage.setItem('loggedNotildaUser', JSON.stringify(response));
+          loadNotes();
+        }
+      })
+      .catch(error => setAnnouncerText(String(error)));
   };
 
   const logout = () => {
@@ -41,54 +44,67 @@ const App = () => {
     if (password !== password2) {
       setAnnouncerText('Passwords need to match!');
     } else {
-      usersService.registerUser({ username, password }).then(response => {
-        if (response.error) {
-          setAnnouncerText(response.error);
-        } else {
-          setCurrentPage('login');
-        }
-      });
+      usersService
+        .registerUser({ username, password })
+        .then(response => {
+          if (response.error) {
+            setAnnouncerText(response.error);
+          } else {
+            setCurrentPage('login');
+          }
+        })
+        .catch(error => setAnnouncerText(String(error)));
     }
   };
 
   const loadNotes = () => {
     if (!currentUser) return;
     setIsDataLoading(true);
-    notesService.getNotes(currentUser).then(notes => {
-      if (notes.error) {
-        setAnnouncerText(notes.error);
-      } else {
-        setNotes(notes);
-        setIsDataLoading(false);
-      }
-    });
+    notesService
+      .getNotes(currentUser)
+      .then(notes => {
+        if (notes.error) {
+          setAnnouncerText(notes.error);
+        } else {
+          setNotes(notes);
+          setIsDataLoading(false);
+        }
+      })
+      .catch(error => setAnnouncerText(String(error)));
   };
 
   const newNote = () => {
-    notesService.createNote(currentUser).then(note => {
-      setNotes([...notes, note]);
-      if (!editingNoteID) setEditingNoteID(note.id);
-    });
+    notesService
+      .createNote(currentUser)
+      .then(note => {
+        setNotes([...notes, note]);
+        if (!editingNoteID) setEditingNoteID(note.id);
+      })
+      .catch(error => setAnnouncerText(String(error)));
   };
 
   const updateNote = (id, content) => {
     const targetNote = notes.find(note => note.id === id);
     targetNote.content = content;
-    notesService.updateNote(currentUser, targetNote).then(note => {
-      setNotes(notes.map(note => (note.id === id ? { ...note, content: content } : note)));
-      setEditingNoteID(null);
-    });
+    notesService
+      .updateNote(currentUser, targetNote)
+      .then(note => {
+        setNotes(notes.map(note => (note.id === id ? { ...note, content: content } : note)));
+        setEditingNoteID(null);
+      })
+      .catch(error => setAnnouncerText(String(error)));
   };
 
   const deleteNote = id => {
     if (editingNoteID && editingNoteID === id) {
       setEditingNoteID(null);
     }
-    if (confirm('Are you sure you want to delete this note?')) {
-      notesService.deleteNote(currentUser, id).then(() => {
+    notesService
+      .deleteNote(currentUser, id)
+      .then(() => {
         setNotes(notes.filter(note => note.id !== id));
-      });
-    }
+      })
+      .catch(error => setAnnouncerText(String(error)));
   };
 
   const editNote = id => {
