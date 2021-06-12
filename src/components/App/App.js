@@ -52,6 +52,7 @@ const App = () => {
   };
 
   const loadNotes = () => {
+    if (!currentUser) return;
     setIsDataLoading(true);
     notesService.getNotes(currentUser).then(notes => {
       if (notes.error) {
@@ -117,7 +118,7 @@ const App = () => {
 
   useEffect(() => {
     if (currentUser) {
-      loadNotes();
+      loadNotes(currentUser);
     }
   }, [currentUser]);
 
