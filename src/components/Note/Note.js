@@ -1,20 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import styles from '../../main.css';
 
 const Note = ({ note, isEditing, updateNote, editNote, deleteNote }) => {
+  const [noteText, setNoteText] = useState(note.content);
   return (
     <li className={`${styles.noteItem} ${isEditing && styles.editing}`}>
       {isEditing ? (
-        <span
-          role="textbox"
-          contentEditable
-          placeholder="Type something..."
-          className={`${styles.noteContent} ${styles.editing}`}
-          id={`note${note.id}`}
-        >
-          {note.content}
-        </span>
+        <textarea
+          name={'note' + note.id}
+          id={'note' + note.id}
+          cols="30"
+          rows="10"
+          onChange={({ target }) => {
+            setNoteText(target.value);
+          }}
+          value={noteText}
+          className={styles.textarea + ' ' + styles.noteContent + ' ' + styles.editing}
+        />
       ) : (
         <div className={styles.noteContent}>{note.content}</div>
       )}
@@ -22,7 +25,8 @@ const Note = ({ note, isEditing, updateNote, editNote, deleteNote }) => {
         {isEditing ? (
           <button
             className={styles.noteControlsButton}
-            onClick={() => updateNote(note.id, document.querySelector('#note' + note.id).innerText)}
+            // onClick={() => updateNote(note.id, document.querySelector('#note' + note.id).innerText)}
+            onClick={() => updateNote(note.id, noteText)}
           >
             <i className="far fa-save"></i>
           </button>
