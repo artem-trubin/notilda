@@ -67,7 +67,7 @@ const App = () => {
   const newNote = () => {
     notesService.createNote(currentUser).then(note => {
       setNotes([...notes, note]);
-      setEditingNoteID(note.id);
+      if (!editingNoteID) setEditingNoteID(note.id);
     });
   };
 
@@ -93,16 +93,8 @@ const App = () => {
 
   const editNote = id => {
     if (editingNoteID) {
-      const currentEditingNoteID = editingNoteID;
-      if (confirm('You have unsaved work on an editing note. Do you want to save it?')) {
-        updateNote(
-          currentEditingNoteID,
-          document.querySelector('#note' + currentEditingNoteID).innerText,
-        );
-      }
-    }
-
-    setEditingNoteID(id);
+      setAnnouncerText('You have unfinished work! Save before editing another note.');
+    } else setEditingNoteID(id);
   };
 
   useEffect(() => {
