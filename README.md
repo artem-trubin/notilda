@@ -23,6 +23,8 @@ You can try the app [here](https://yaripey.github.io/notilda)!
 - [ ] Complete code revision
 - [ ] Split styles to separate files
 - [ ] Redesign and styles revamp
+- [ ] Better loading indicator
+- [ ] Separate page for a note
 
 ### Stage 2. Adding features!
 
