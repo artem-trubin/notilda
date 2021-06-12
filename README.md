@@ -18,6 +18,12 @@ You can try the app [here](https://yaripey.github.io/notilda)!
 - [x] User registration (separate registration view with form)
 - [x] User login/logout (separate login view with form)
 
+### Stage 1.2 Better code
+
+- [ ] Complete code revision
+- [ ] Split styles to separate files
+- [ ] Redesign and styles revamp
+
 ### Stage 2. Adding features!
 
 - [ ] Create notebooks (all notes must be inside a certain notebook, notelist feature now shows notes from only one selected notebook)

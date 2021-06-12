@@ -15,11 +15,12 @@ const App = () => {
   const [isDataLoading, setIsDataLoading] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [notes, setNotes] = useState([]);
+  const [announcerText, setAnnouncerText] = useState('');
 
   const loginSubmit = ({ username, password }) => {
     loginService.login({ username, password }).then(response => {
       if (response.error) {
-        // handle error
+        setAnnouncerText(response.error);
       } else {
         setCurrentPage('vault');
         setCurrentUser(response);
@@ -38,16 +39,15 @@ const App = () => {
 
   const registerSubmit = ({ username, password, password2 }) => {
     if (password !== password2) {
-      // error handle
+      setAnnouncerText('Passwords need to match!');
     } else {
       usersService.registerUser({ username, password }).then(response => {
         if (response.error) {
-          // handle error
+          setAnnouncerText(response.error);
         } else {
           setCurrentPage('login');
         }
       });
-      setCurrentPage('login');
     }
   };
 
@@ -56,7 +56,7 @@ const App = () => {
     setIsDataLoading(true);
     notesService.getNotes(currentUser).then(notes => {
       if (notes.error) {
-        // handle error
+        setAnnouncerText(notes.error);
       } else {
         setNotes(notes);
         setIsDataLoading(false);
@@ -137,6 +137,8 @@ const App = () => {
           updateNote={updateNote}
           editNote={editNote}
           deleteNote={deleteNote}
+          announcerText={announcerText}
+          setAnnouncerText={setAnnouncerText}
         />
       );
     case 'login':
@@ -146,6 +148,8 @@ const App = () => {
           currentUser={currentUser}
           setCurrentPage={setCurrentPage}
           logout={logout}
+          announcerText={announcerText}
+          setAnnouncerText={setAnnouncerText}
         />
       );
     case 'register':
@@ -155,6 +159,8 @@ const App = () => {
           logout={logout}
           currentUser={currentUser}
           registerSubmit={registerSubmit}
+          announcerText={announcerText}
+          setAnnouncerText={setAnnouncerText}
         />
       );
   }

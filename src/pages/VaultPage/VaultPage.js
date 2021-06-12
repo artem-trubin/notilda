@@ -16,11 +16,18 @@ const VaultPage = ({
   updateNote,
   deleteNote,
   editNote,
+  announcerText,
+  setAnnouncerText,
 }) => {
   return (
     <div className={styles.container}>
       <div className={styles.sidebar}>
-        <Header currentUser={currentUser} logout={logout} />
+        <Header
+          currentUser={currentUser}
+          logout={logout}
+          announcerText={announcerText}
+          setAnnouncerText={setAnnouncerText}
+        />
         <NewNoteButton newNote={newNote} />
       </div>
       <div className={styles.mainContainer}>

@@ -147,6 +147,7 @@ body {
 }
 
 .sidebar {
+  width: 170px;
   display: flex;
   flex-direction: column;
   margin-right: 20px;
@@ -263,6 +264,37 @@ body {
   border-color: rgb(255, 137, 137);
   background: rgb(255, 137, 137);
   color: white;
+}
+
+.announcer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgb(255, 50, 50);
+  border-radius: 10px;
+  padding: 10px;
+  color: white;
+  margin-bottom: 10px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  overflow: auto;
+  width: 100%;
+}
+
+.announcerClose {
+  background: none;
+  font-size: 20px;
+  color: white;
+  border: none;
+  cursor: pointer;
+  margin-top: 10px;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.announcerClose:hover {
+  background: white;
+  color: rgb(255, 50, 50);
 }
 
 @media (max-width: 600px) {
