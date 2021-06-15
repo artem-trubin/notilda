@@ -6,13 +6,14 @@ const LoginForm = ({ loginSubmit, setCurrentPage }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
+
   return (
     <div>
       <h2 className={styles.pageTitle}>Login</h2>
       <form
         name="loginForm"
         className={styles.form}
-        onSubmit={e => {
+        onSubmit={e => { // move to handler
           e.preventDefault();
           loginSubmit({ username, password });
         }}

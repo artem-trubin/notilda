@@ -1,6 +1,6 @@
 import { baseURL } from './common';
 
-const url = baseURL + '/users';
+const url = baseURL + '/users'; // why not template string ?
 
 const registerUser = user => {
   return fetch(url, {

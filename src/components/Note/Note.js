@@ -25,10 +25,10 @@ const Note = ({ note, isEditing, updateNote, editNote, deleteNote }) => {
         {isEditing ? (
           <button
             className={styles.noteControlsButton}
-            // onClick={() => updateNote(note.id, document.querySelector('#note' + note.id).innerText)}
+            // onClick={() => updateNote(note.id, document.querySelector('#note' + note.id).innerText)}  //TODO?????
             onClick={() => updateNote(note.id, noteText)}
           >
-            <i className="far fa-save"></i>
+            <i className="far fa-save"/>
           </button>
         ) : (
           <button className={styles.noteControlsButton} onClick={() => editNote(note.id)}>

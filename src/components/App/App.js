@@ -46,14 +46,14 @@ const App = () => {
     } else {
       usersService
         .registerUser({ username, password })
-        .then(response => {
-          if (response.error) {
-            setAnnouncerText(response.error);
+        .then(({error}) => {
+          if (error) {
+            setAnnouncerText(error);  // use destructing
           } else {
             setCurrentPage('login');
           }
         })
-        .catch(error => setAnnouncerText(String(error)));
+        .catch(error => setAnnouncerText(String(error))); // TODO
     }
   };
 
@@ -66,11 +66,11 @@ const App = () => {
         if (notes.error) {
           setAnnouncerText(notes.error);
         } else {
-          setNotes(notes);
+          setNotes(notes); // Type of notes?
           setIsDataLoading(false);
         }
       })
-      .catch(error => setAnnouncerText(String(error)));
+      .catch(error => setAnnouncerText(String(error))); // could be an object?
   };
 
   const newNote = () => {
@@ -88,7 +88,7 @@ const App = () => {
     targetNote.content = content;
     notesService
       .updateNote(currentUser, targetNote)
-      .then(note => {
+      .then(() => { // not used ?
         setNotes(notes.map(note => (note.id === id ? { ...note, content: content } : note)));
         setEditingNoteID(null);
       })
@@ -130,7 +130,7 @@ const App = () => {
     }
   }, [currentUser]);
 
-  switch (currentPage) {
+  switch (currentPage) {   // why switch?
     case 'home':
       return <HomePage />;
     case 'vault':

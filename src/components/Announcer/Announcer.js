@@ -13,7 +13,7 @@ const Announcer = ({ announcerText, setAnnouncerText }) => {
             setAnnouncerText('');
           }}
         >
-          <i className="far fa-times-circle"></i>
+          <i className="far fa-times-circle"/>
         </button>
       </div>
     );

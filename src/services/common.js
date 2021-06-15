@@ -9,7 +9,7 @@ const setToken = newToken => {
   token = `bearer ${newToken}`;
 };
 
-export const loginHandler = user => {
+export const loginHandler = user => {  // todo YAGNI
   loginService.login(user).then(user => {
     setToken(user.token);
     window.state.currentUser = user;
@@ -17,7 +17,7 @@ export const loginHandler = user => {
   });
 };
 
-export const serverErrorHandler = response => {
+export const serverErrorHandler = response => { // prop destructing
   if (!response.ok) {
     if (response.status === 401) {
     }
